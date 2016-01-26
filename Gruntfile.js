@@ -16,7 +16,7 @@ exports = module.exports = function(grunt) {
         },
         jsdoc: {
             docs: {
-                src: ["lib/**/*.js", "index.js", "README.md"],
+                src: ["lib/**/*.js", "index.js", "README.md", "package.json"],
                 jsdoc: "./node_modules/.bin/jsdoc",
                 options: {
                     destination: "docs",
