@@ -69,30 +69,30 @@ VERSION="$(node -e "console.log(require('../package.json').version)")"
 }
 
 
-echo "copying jsdoc output"
+echo " >> copying jsdoc output"
 mv ../docs/ss-interface/${VERSION} .
 
 
-log "installing dependencies for compiling" 0
+echo " >> installing dependencies for compiling"
 npm install
 
 
-log "compiling the landing page" 0
+echo " >> compiling the landing page"
 npm run compile
 
 
-log "configuring and comitting changes" 0
+echo " >> configuring and comitting changes"
 git config user.email "mugo@forfuture.co.ke"
 git config user.name "GochoMugo"
 git add -A .
 git commit -a -m "v${VERSION} docs"
 
 
-log "adding github authentication token" 0
+echo " >> adding github authentication token"
 echo -e "machine github.com\n  login mugo@forfuture.co.ke\n  password ${GH_TOKEN}" >> ~/.netrc
 
 
-log "pushing to gh-pages branch" 0
+echo " >> pushing to gh-pages branch"
 git push origin gh-pages \
-  && log "successfully pushed to gh-pages" 1 \
-  || log "failed to push to gh-pages" 2
+  && echo " >> successfully pushed to gh-pages" \
+  || echo " >> failed to push to gh-pages"
