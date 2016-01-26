@@ -1,0 +1,5 @@
+# trash from other branches
+coverage/
+docs/
+node_modules/
+npm-debug.log

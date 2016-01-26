@@ -1,0 +1,27 @@
+doctype html
+html
+    head
+        title Ma3Route | node-ss-interface
+        link(rel="stylesheet", href="src/css/index.css")
+
+    body
+        div.body
+            div.page-header
+                div.page-title
+                    h1 node-ss-interface
+                div.page-toplinks
+                    a.btn.btn-default.btn-lg(href="https://github.com/ma3route/node-ss-interface") Github
+                    a.btn.btn-default.btn-lg(href="https://github.com/ma3route/node-ss-interface/issues") Issues
+                    a.btn.btn-default.btn-lg(href="https://github.com/Ma3Route/node-ss-interface/graphs/contributors") Contributors
+            div.page-body
+                div.main-content
+                    h2 Sorted Set Interface (for Node.js)
+                    p The latest version is 
+                        strong= latestVersion
+                        | .  See its documentation 
+                        a(href=latestVersion + "/") here.
+                div.page-all-versions
+                    each version in versions.slice().reverse()
+                        a(href=version + "/")= "v" + version
+            div.page-footer
+                p Copyright &copy; 2016 SkyeHi Limited

@@ -1,0 +1,43 @@
+/* fonts */
+@font-face {
+    font-family: "Asul";
+    src: url("fonts/Asul-Bold.ttf");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Raleway";
+    src: url("fonts/raleway_regular-webfont.ttf");
+}
+
+
+/* All content */
+* {
+    font-family: "Raleway", sans-serif;
+}
+
+
+/* The body of the document */
+body {
+    padding: 60px;
+    text-align: center;
+}
+
+
+/* The body of the introduction */
+.main-content {
+    padding: 40px;
+}
+
+
+/* The top links */
+.page-toplinks a {
+    margin: 8px;
+}
+
+
+/* The versions */
+.page-all-versions {
+    margin-bottom: 34px;
+}
+
