@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "docs": "grunt docs",
-    "test": "grunt test"
+    "test": "grunt test",
+    "test-coverage": "istanbul cover _mocha --report lcovonly -- -R spec test/test.*.js"
   },
   "keywords": [
     "cache",
