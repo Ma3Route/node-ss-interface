@@ -1,0 +1,6 @@
+{
+    "batch_size": 50,
+    "key": "ss-interface:default",
+    "min_size": 500,
+    "max_size": 1000
+}
