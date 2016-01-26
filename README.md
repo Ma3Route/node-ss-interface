@@ -3,6 +3,10 @@
 
 > Sorted Set Interface (for [Node.js][node])
 
+[![Travis][travis-img]][travis]
+
+[travis]:https://travis-ci.org/Ma3Route/node-ss-interface
+[travis-img]:https://img.shields.io/travis/Ma3Route/node-ss-interface.svg?style=flat-square
 
 This module defines interfaces that can be used by applications using a
 Redis Server Database as a cache of items in a sorted set. Such items
@@ -108,7 +112,8 @@ var ssClientInterface = ssInterface.Client();
 
 ## documentation:
 
-The documentation can be found online at https://ma3route.github.io/ss-interface/.
+The documentation can be found online at
+https://ma3route.github.io/node-ss-interface/.
 
 However, you can generate documentation on your own:
 
@@ -128,8 +133,8 @@ $ http-server docs/
 
 ## what's next?
 
-Currently, the module only works with Redis. It would be nice to have the choice
-to use alternative data stores.
+Currently, the module only works with Redis. It would be nice to have the
+choice to use alternative data stores.
 
 
 ## tests:
