@@ -1,5 +1,5 @@
 /**
- * @module ma3route-web-cache
+ * @module ss-interface
  * @description
  * The exported module
  */
