@@ -78,9 +78,7 @@ describe("Server configurations", function() {
     }
 
     before(function() {
-        for (var i = 0; i < config.max_size * 2; i++) {
-            items.push({ id: i });
-        }
+        items = utils.newItems(config.max_size * 2);
     });
 
     it("maximum size is respected", function(done) {
