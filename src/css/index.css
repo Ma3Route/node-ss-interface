@@ -41,3 +41,7 @@ body {
     margin-bottom: 34px;
 }
 
+/* Each version in the versions bar */
+.page-all-versions a {
+     margin-right: 12px;
+}
