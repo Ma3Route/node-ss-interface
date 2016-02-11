@@ -11,11 +11,11 @@
 This module defines interfaces that can be used by applications using a
 Redis Server Database as a cache of items in a sorted set. Such items
 usually have unique identifiers that can be used to determine their position
-in the set. Such identifiers are mostly sequentially-generated IDs. However,
-should two or more items share the same identifier, these items' values
-are compared with each other lexicographically<sup>\[[how?][how]]</sup> to determine
-their final position. It relies majorly on Redis' [Sorted Set][set]
-data-structure.
+in the set. Such identifiers are mostly sequentially-generated IDs, with the
+possibility of some IDs to be missing. However, should two or more items
+share the same identifier, these items' values are compared with each other
+lexicographically<sup>\[[how?][how]]</sup> to determine their final
+position. It relies majorly on Redis' [Sorted Set][set] data-structure.
 
 Example of such sets:
 
@@ -39,9 +39,14 @@ and stored in the data store.
         201                 213                 215
 ```
 
-This module is favourable for time-sensitive data consumed by applications
-only concerned with recently-added items. For such applications, the
-identifier of such recently-added items have a higher score/value.
+This makes it favorable for applications using time-sensitive data items,
+with such sequentially-generated IDs and an acceptance of missing items.
+For such applications, the identifiers increment with time. This also
+implies that a request is made with the parameters **id** and a boolean value
+**x** called 'newer'. If 'newer' is true, the request returns items in the range
+`id -> +Infinity` with a limit of 'batch_size'. If 'newer' is false, the
+request returns items in the range `-Infinity -> id` with a limit of
+'batch_size'.
 
 The interface is divided into main sub-interfaces, **Server** and **Client**.
 The Server interface is intended to be used the application, on its own
@@ -68,7 +73,7 @@ to either manipulating the cache or simply accessing it.
                     |                               |
     +------------------------------+  +---------------------------------+
     | +-------------------------+  |  | +-----------------------------+ |
-    | |     ss-interface        |  |  | |       ss-interface	      | |
+    | |     ss-interface        |  |  | |       ss-interface          | |
     | +-------------------------+  |  | +-----------------------------+ |
     |                              |  |                                 |
     |        App Instance 1        |  |         App Instance 2          |
