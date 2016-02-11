@@ -108,6 +108,15 @@ describe("Client#get", function() {
         });
     });
 
+    it("return older items, when options.newer === false, even if their ids are not successive", function(done) {
+        var items = [ { id: 1 }, { id: 2 }, { id: 8 } ];
+        pump(items, { newer: false, id: 8 }, function(ret) {
+            should(ret.length).equal(3);
+            should.deepEqual(ret, [ { id: 1 }, { id: 2 }, { id: 8 } ]);
+            return done();
+        });
+    });
+
     it("returns latest items in batch size", function(done) {
         var items = utils.newItems(20);
         pump(items, function(ret) {
@@ -118,7 +127,7 @@ describe("Client#get", function() {
 
     it("returns old items in batch size", function(done) {
         var items = utils.newItems(20);
-        pump(items, { newer: false, id: 10 }, function(ret) {
+        pump(items, { newer: false, id: 20 }, function(ret) {
             should(ret.length).equal(config.batch_size);
             return done();
         });
