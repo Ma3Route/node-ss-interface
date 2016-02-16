@@ -97,6 +97,40 @@ describe("Server configurations", function() {
 });
 
 
+describe("Server#getSize", function() {
+    it("returns '0' if zero items", function(done) {
+        server.getSize(function(err, size) {
+            should(err).not.be.ok();
+            should(size).equal(0);
+            return done();
+        });
+    });
+
+    it("returns '1' if one item is added", function(done) {
+        server.addOne(8, "item 8", function(err) {
+            should(err).not.be.ok();
+            server.getSize(function(getSizeErr, size) {
+                should(getSizeErr).not.be.ok();
+                should(size).equal(1);
+                return done();
+            });
+        });
+    });
+
+    it("return 'n' if 'n' items are added", function(done) {
+        var items = [{ id: 1 }, { id: 2 }];
+        server.add(items, function(addErr) {
+            should(addErr).not.be.ok();
+            server.getSize(function(getSizeErr, size) {
+                should(getSizeErr).not.be.ok();
+                should(size).equal(items.length);
+                return done();
+            });
+        });
+    });
+});
+
+
 describe("Server#addOne", function() {
     it("works as expected", function(done) {
         server.addOne(100, "item 100", function(err) {
