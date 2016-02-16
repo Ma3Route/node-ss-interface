@@ -190,6 +190,31 @@ describe("Server#add", function() {
 });
 
 
+describe("Server#removeOne", function() {
+    it("removes a single item", function(done) {
+        var id = 434;
+        server.addOne(id, "item 434", function(addErr) {
+            should(addErr).not.be.ok();
+            server.removeOne(id, function(removeErr) {
+                should(removeErr).not.be.ok();
+                client.get(function(getErr, items) {
+                    should(getErr).not.be.ok();
+                    should(items.length).equal(0);
+                    return done();
+                });
+            });
+        });
+    });
+
+    it("ignores non-existing item", function(done) {
+        server.removeOne(243, function(removeErr) {
+            should(removeErr).not.be.ok();
+            return done();
+        });
+    });
+});
+
+
 describe("Server#purge", function() {
     it("empties cache", function(done) {
         server.addOne(1, "item 1", function(err) {
