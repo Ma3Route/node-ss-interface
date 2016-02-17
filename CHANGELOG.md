@@ -7,9 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+
+## 0.1.0 - 17/02/2016
+
 Added:
 
-* add `Server#removeOne` function
+* add `Server#removeOne` function (7b16f85c847442cb8c414837f2f6e2be783797d0)
 
 
 ## 0.0.1 -11/02/2016
