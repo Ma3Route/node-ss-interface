@@ -8,6 +8,7 @@
 
 // npm-installed modules
 var should = require("should");
+var stringify = require("json-stable-stringify");
 
 
 // own modules
@@ -146,6 +147,18 @@ describe("Server#addOne", function() {
     it("callback is optional", function() {
         should.doesNotThrow(function() {
             server.addOne(200, "item 200");
+        });
+    });
+
+    it("allows using an object", function(done) {
+        var obj = { id: 2024, data: "data" };
+        server.addOne(obj, function(err) {
+            should(err).not.be.ok();
+            client.get(function(clientErr, items) {
+                should(clientErr).not.be.ok();
+                should.equal(items[0], stringify(obj));
+                return done();
+            });
         });
     });
 });

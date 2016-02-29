@@ -7,6 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+Changed:
+
+* use [json-stable-stringify](https://github.com/substack/json-stable-stringify)
+  to convert objects into strings.
+
 
 ## 0.1.0 - 17/02/2016
 

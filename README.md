@@ -10,7 +10,7 @@
 
 This module defines interfaces that can be used by applications using a
 Redis Server Database as a cache of items in a sorted set. Such items
-usually have unique identifiers that can be used to determine their position
+*usually* have unique identifiers that can be used to determine their position
 in the set. Such identifiers are mostly sequentially-generated IDs, with the
 possibility of some IDs to be missing. However, should two or more items
 share the same identifier, these items' values are compared with each other
@@ -28,8 +28,8 @@ and `bull` respectively.
 ```
 
 You can use any string as your items' value. For example, messages on a
-server (like IRC?) in JSON format may be stringified (using JSON.stringify)
-and stored in the data store.
+server (like IRC?) in JSON format may be stringified
+(see [note on Object](#objects)) and stored in the data store.
 
 ```
     {id:201,            {id:213,            {id: 215,
@@ -39,8 +39,14 @@ and stored in the data store.
         201                 213                 215
 ```
 
-This makes it favorable for applications using time-sensitive data items,
-with such sequentially-generated IDs and an acceptance of missing items.
+This makes it favorable for applications:
+
+* using time-sensitive, unique data items,
+* with such sequentially-generated IDs,
+* have an acceptance of missing items, and
+* require the ability to insert items in any position in the set, while
+  retaining order
+
 For such applications, the identifiers increment with time. This also
 implies that a request is made with the parameters **id** and a boolean value
 **x** called 'newer'. If 'newer' is true, the request returns items in the range
@@ -88,6 +94,25 @@ storing data in process memory, as it is ineffiecient, memory-consuming
 and data can not be accessed across process memory boundaries. The module
 provides a smooth interface that can be shared by all of these instances,
 when working with sorted sets.
+
+
+<a name="objects"></a>
+## objects:
+
+The interface methods allow passing objects, which are in turn turned into
+strings using [json-stable-stringify][json-stable]. Why? JavaScript does
+**not** guarantee the order of key-value pairs in objects and their string
+equivalents. This fact will introduce duplicate items into the cache, as
+`JSON.stringify` is **not** deterministic. However,
+[json-stable-stringify][json-stable] is deterministic. "Equal" objects are
+therefore, converted into the same string, regardless of the order of their
+properties.
+
+While objects will be converted to strings automatically, they will **not**
+be converted back to objects (in the client interface). It remains the
+responsibility of the caller to parse strings into objects, as necessary.
+
+[json-stable]:https://github.com/substack/json-stable-stringify
 
 
 ## installation:
