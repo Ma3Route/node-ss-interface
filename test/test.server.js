@@ -144,9 +144,21 @@ describe("Server#addOne", function() {
         });
     });
 
+    it("id is optional", function(done) {
+        should.doesNotThrow(function() {
+            server.addOne({ id: 2434 }, done);
+        });
+    });
+
     it("callback is optional", function() {
         should.doesNotThrow(function() {
             server.addOne(200, "item 200");
+        });
+    });
+
+    it("id and callback are both optional", function() {
+        should.doesNotThrow(function() {
+            server.addOne({ id: 243 });
         });
     });
 
