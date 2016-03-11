@@ -1,6 +1,6 @@
 {
   "name": "ss-interface",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An interface to a datastore-backed sorted set",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "web",
     "interface"
   ],
-  "author": "GochoMugo <mugo@forfuture.co.ke> (https://gochomugo.github.io/)",
+  "author": "GochoMugo <mugo@forfuture.co.ke> (http://gmugo.in)",
   "dependencies": {
     "debug": "^2.2.0",
     "json-stable-stringify": "^1.0.1",

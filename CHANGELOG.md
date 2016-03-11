@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+
+## 0.2.0 - 11/03/2016
+
 Changed:
 
 * use [json-stable-stringify](https://github.com/substack/json-stable-stringify)
