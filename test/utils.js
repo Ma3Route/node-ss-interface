@@ -10,9 +10,14 @@ exports = module.exports = {
     getCacheClient: getCacheClient,
     getCacheServer: getCacheServer,
     getRedisClient: getRedisClient,
+    getSource: getSource,
     newItems: newItems,
     parse: parse,
 };
+
+
+// built-in modules
+var events = require("events");
 
 
 // npm-installed modules
@@ -82,4 +87,17 @@ function newItems(length) {
         items.push({ id: i });
     }
     return items;
+}
+
+
+/**
+ * Return a phony source that we can control ourselves. This will help
+ * in observing the behaviour of the cache collection in our tests.
+ */
+function getSource() {
+    var source = new events.EventEmitter();
+    source.sendMessage = function(message) {
+        source.emit("message", message);
+    }
+    return source;
 }

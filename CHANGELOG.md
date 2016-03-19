@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+Added:
+
+* module `Collection` for managing server caches
+
 
 ## 0.2.0 - 11/03/2016
 
