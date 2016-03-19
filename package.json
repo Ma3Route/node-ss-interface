@@ -1,6 +1,6 @@
 {
   "name": "ss-interface",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "An interface to a datastore-backed sorted set",
   "main": "index.js",
   "scripts": {
