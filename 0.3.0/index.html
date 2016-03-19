@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3>ss-interface 0.3.0</h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>ss-interface</h1><blockquote>
+<p>Sorted Set Interface (for <a href="http://nodejs.org/">Node.js</a>)</p>
+</blockquote>
+<p><a href="https://travis-ci.org/Ma3Route/node-ss-interface"><img src="https://img.shields.io/travis/Ma3Route/node-ss-interface.svg?style=flat-square" alt="Travis"></a></p>
+<p>This module defines interfaces that can be used by applications using a
+Redis Server Database as a cache of items in a sorted set. Such items
+<em>usually</em> have unique identifiers that can be used to determine their position
+in the set. Such identifiers are mostly sequentially-generated IDs, with the
+possibility of some IDs to be missing. However, should two or more items
+share the same identifier, these items' values are compared with each other
+lexicographically<sup>[<a href="http://redis.io/topics/data-types-intro#lexicographical-scores">how?</a>]</sup> to determine their final
+position. It relies majorly on Redis' <a href="http://redis.io/topics/data-types-intro#sorted-sets">Sorted Set</a> data-structure.</p>
+<p>Example of such sets:</p>
+<p>A set of 3 items with the IDs <code>6</code>, <code>7</code> and <code>8</code> and values <code>gocho</code>, <code>santa</code>
+and <code>bull</code> respectively.</p>
+<pre class="prettyprint source"><code>{   'gocho'     'santa'     'bull'    }
+       6           7          8</code></pre><p>You can use any string as your items' value. For example, messages on a
+server (like IRC?) in JSON format may be stringified
+(see <a href="#objects">note on Object</a>) and stored in the data store.</p>
+<pre class="prettyprint source"><code>    {id:201,            {id:213,            {id: 215,
+{    user:gocho,         user:santa,         user:bull,     }
+     message:...}        message:...}        message:...}
+
+        201                 213                 215</code></pre><p>This makes it favorable for applications:</p>
+<ul>
+<li>using time-sensitive, unique data items,</li>
+<li>with such sequentially-generated IDs,</li>
+<li>have an acceptance of missing items, and</li>
+<li>require the ability to insert items in any position in the set, while
+retaining order</li>
+</ul>
+<p>For such applications, the identifiers increment with time. This also
+implies that a request is made with the parameters <strong>id</strong> and a boolean value
+<strong>x</strong> called 'newer'. If 'newer' is true, the request returns items in the range
+<code>id -&gt; +Infinity</code> with a limit of 'batch_size'. If 'newer' is false, the
+request returns items in the range <code>-Infinity -&gt; id</code> with a limit of
+'batch_size'.</p>
+<p>The interface is divided into main sub-interfaces, <strong>Server</strong> and <strong>Client</strong>.
+The Server interface is intended to be used the application, on its own
+behalf, to add new items to the set. The Client interface is intended
+to be used by the application, on its own or its users' behalf, to
+retrieve items from the set. The separation helps focus operations
+to either manipulating the cache or simply accessing it.</p>
+<h2>where does this module fit in?</h2><pre class="prettyprint source"><code>    +-------------------------------------------------------------------+
+    |                                                                   |
+    |                           DATA STORE                              |
+    |                                                                   |
+    +-------------------------------------------------------------------+
+                    ^                               ^
+                    |                               |
+    +------------------------------+  +---------------------------------+
+    | +-------------------------+  |  | +-----------------------------+ |
+    | |     ss-interface        |  |  | |       ss-interface          | |
+    | +-------------------------+  |  | +-----------------------------+ |
+    |                              |  |                                 |
+    |        App Instance 1        |  |         App Instance 2          |
+    |                              |  |                                 |
+    +------------------------------+  +---------------------------------+</code></pre><p>To make maximum use of multi-core systems, we usually tend to replicate our
+application process (behind a load balancer). As shown above, the processes
+(or rather the app instances) share a single datastore. This helps avoid
+storing data in process memory, as it is ineffiecient, memory-consuming
+and data can not be accessed across process memory boundaries. The module
+provides a smooth interface that can be shared by all of these instances,
+when working with sorted sets.</p>
+<p><a name="objects"></a></p>
+<h2>objects:</h2><p>The interface methods allow passing objects, which are in turn turned into
+strings using <a href="https://github.com/substack/json-stable-stringify">json-stable-stringify</a>. Why? JavaScript does
+<strong>not</strong> guarantee the order of key-value pairs in objects and their string
+equivalents. This fact will introduce duplicate items into the cache, as
+<code>JSON.stringify</code> is <strong>not</strong> deterministic. However,
+<a href="https://github.com/substack/json-stable-stringify">json-stable-stringify</a> is deterministic. &quot;Equal&quot; objects are
+therefore, converted into the same string, regardless of the order of their
+properties.</p>
+<p>While objects will be converted to strings automatically, they will <strong>not</strong>
+be converted back to objects (in the client interface). It remains the
+responsibility of the caller to parse strings into objects, as necessary.</p>
+<h2>installation:</h2><p>Using <a href="https://npmjs.com/">npm</a>:</p>
+<pre class="prettyprint source lang-bash"><code>$ npm install ss-interface</code></pre><h2>usage:</h2><pre class="prettyprint source lang-js"><code>var ssInterface = require(&quot;ss-interface&quot;);
+
+// constructing an 'instance' of the Server interface
+var ssServerInterface = ssInterface.Server();
+
+// constructing an 'instance' of the Client interface
+var ssClientInterface = ssInterface.Client();</code></pre><h2>documentation:</h2><p>The documentation can be found online at
+https://ma3route.github.io/node-ss-interface/.</p>
+<p>However, you can generate documentation on your own:</p>
+<pre class="prettyprint source lang-bash"><code>$ npm run docs</code></pre><p>Documentation will be generated to <code>docs/</code>. Any decent web server can be
+used to server the static files. For example,</p>
+<pre class="prettyprint source lang-bash"><code>$ npm install http-server
+$ http-server docs/
+# now you can view the docs at http://0.0.0.0:8080</code></pre><h2>what's next?</h2><p>Currently, the module only works with Redis. It would be nice to have the
+choice to use alternative data stores.</p>
+<h2>tests:</h2><p>Before running tests, ensure that a Redis server is running at the port
+<code>${REDIS_PORT}</code> or the default port <code>6379</code>.</p>
+<p>To run the tests:</p>
+<pre class="prettyprint source lang-bash"><code>$ npm test</code></pre><h2>license:</h2><p><strong>THE MIT LICENSE</strong></p>
+<p><strong>Copyright &copy; 2016 SkyeHi Limited</strong></p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ss-interface.html">ss-interface</a></li></ul><h3>Classes</h3><ul><li><a href="Client.html">Client</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Server.html">Server</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Sat Mar 19 2016 08:02:41 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
