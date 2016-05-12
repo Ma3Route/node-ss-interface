@@ -21,15 +21,15 @@
     "lodash": "^4.2.1"
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
-    "grunt-eslint": "^17.0.0",
-    "grunt-jsdoc": "^1.1.0",
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-eslint": "^18.1.0",
+    "grunt-jsdoc": "^2.0.0",
     "grunt-mocha-test": "^0.12.7",
-    "mocha": ">=2.4.5",
-    "istanbul": "^0.3.17",
+    "istanbul": "^0.4.3",
     "jsdoc": "^3.4.0",
     "load-grunt-tasks": "^3.4.0",
+    "mocha": ">=2.4.5",
     "redis": "^2.4.2",
     "should": "^8.2.1"
   }
