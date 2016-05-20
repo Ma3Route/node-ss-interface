@@ -125,10 +125,26 @@ describe("Client#get", function() {
         });
     });
 
+    it("allows options.batch_size for a single invocation", function(done) {
+        var items  = utils.newItems(20);
+        pump(items, { batch_size: 10 }, function(ret) {
+            should(ret.length).equal(10);
+            return done();
+        });
+    });
+
     it("returns old items in batch size", function(done) {
         var items = utils.newItems(20);
         pump(items, { newer: false, id: 20 }, function(ret) {
             should(ret.length).equal(config.batch_size);
+            return done();
+        });
+    });
+
+    it("allows options.batch_size for a single invocation", function(done) {
+        var items = utils.newItems(20);
+        pump(items, { newer: false, id: 20, batch_size: 10 }, function(ret) {
+            should(ret.length).equal(10);
             return done();
         });
     });

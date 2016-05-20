@@ -12,9 +12,13 @@ Added:
 * Cache refresh in `Collection` handles purging the cache and filling it with
   new items, passed from the populate function. This also results in
   **change in signature** of the populate function.
-* Add cache refresh option, `invokeImmediately`, which when set to `true`,
-  invokes the refresh immediately, when `startRefreshInterval` is invoked.
-  Otherwise it doesn't. This option defaults to `true`.
+* Add option `invokeImmediately` for `Collection#startRefreshInterval`,
+  which when set (or defaults) to `true`, invokes the refresh immediately,
+  once the method is invoked. Otherwise it doesn't.
+  This option is **optional** as it defaults to `true`.
+* Add option `batch_size` for `Client#get` for specifying batch size to use
+  in the single invocation. This option is **optional** as it defaults
+  to the configured batch size..
 
 
 ## 0.3.0 - 19/03/2016
