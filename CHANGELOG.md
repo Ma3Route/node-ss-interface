@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+
+## 0.4.0 - 21/05/2016
+
 Added:
 
 * Cache refresh in `Collection` handles purging the cache and filling it with
