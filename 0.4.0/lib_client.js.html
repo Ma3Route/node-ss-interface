@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/client.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/client.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @description
+ * This module defines an interface to be used by the application,
+ * on behalf of its users, when trying to retrieve items
+ * from the redis server DB.
+ */
+
+
+"use strict";
+
+
+// exporting the Cache constructor
+exports = module.exports = Client;
+exports.Client = Client;
+
+
+// npm-installed modules
+var _ = require("lodash");
+var debug = require("debug")("ss-interface:client");
+
+
+// own modules
+var defaults = require("./defaults");
+
+
+/**
+ * Construct new instance of the client interface.
+ *
+ * @constructor
+ * @public
+ *
+ * @param {RedisClient} client
+ * @param {Object} [config] - configuration values. See {@link Client#_configure}
+ */
+function Client(client, config) {
+    debug("constructing new client");
+    this._client = client; // redis client
+    this._key = null; // key to use on redis store
+    this._batch_size = null; // size of a batch of items
+    this._configure(config);
+    return this;
+}
+
+
+/**
+ * Configure the redis client. This supports multiple invocations, allowing
+ * changing existing configuration. Most configuration values are optional,
+ * defaulting to the existing value or the built-in default values.
+ *
+ * @private
+ *
+ * @param {Object} [config] - configuration values
+ * @param {String} [config.key] - key to use in Redis
+ * @param {Number} [config.batch_size] -size of a single batch
+ */
+Client.prototype._configure = function(config) {
+    debug("configuring the client");
+    config = config || { };
+    _.defaults(config, defaults);
+    this._key = config.key;
+    this._batch_size = config.batch_size;
+    return this;
+};
+
+
+/**
+ * Get the latest added items. This retrieves an array of ordered,
+ * most-recently-added items, of size &lt;config.batch_size>.
+ *
+ * @todo allow overriding the batch size used
+ *
+ * @private
+ *
+ * @param {Object} [options] - options for retrieving items
+ * @param {String} [options.key] - key to use; overriding the cache's key
+ * @param {Number} [options.batch_size] - batch size to use in this invocation
+ * @param {Function} callback - callback(err, items)
+ */
+Client.prototype._getLatest = function(options, callback) {
+    if (!callback) {
+        callback = options;
+        options = { };
+    }
+    var key = options.key || this._key;
+    var batch_size = options.batch_size || this._batch_size;
+
+    debug("getting latest %d items from cache [%s]", batch_size, key);
+    return this._client.zrange(key, -batch_size, -1, callback);
+};
+
+
+/**
+ * Retrieve items from cache. Using a single item index, we can look
+ * forward (towards the newest items) or behind (towards the oldest items).
+ * By default, all the newer items are returned, even if the result array
+ * size is larger than `config.batch_size`. Looking behind is limited to
+ * return an array of maximum size of `config.batch_size`.
+ *
+ * @todo allow overriding the batch size
+ *
+ * @public
+ *
+ * @param {Object} [options] - options for fetching
+ * @param {Number|null} [options.id] - id of item
+ * @param {String} [options.key] - key to use; overriding the cache's key
+ * @param {Boolean} [options.newer=true] - whether to return newer or older items
+ * @param {Number} [options.batch_size] - batch size to use in this invocation
+ * @param {Function} callback - callback(err, items)
+ */
+Client.prototype.get = function(options, callback) {
+    if (!callback) {
+        callback = options;
+        options = { };
+    }
+
+    var key = options.key || this._key;
+    var startIndex = options.id;
+    var endIndex = +Infinity;
+    var batch_size = options.batch_size || this._batch_size;
+
+    // get the latest updates if no id is given
+    if (_.isUndefined(startIndex) || _.isNull(startIndex)) {
+        this._getLatest({
+            key: key,
+            batch_size: batch_size,
+        }, callback);
+        return;
+    }
+
+    if (options.newer === false) {
+        endIndex = startIndex;
+        startIndex = -Infinity;
+        var offset = endIndex - batch_size;
+        var args = [key, endIndex, startIndex, "LIMIT", 0, batch_size]
+        debug("getting items from cache [%s] {inf -> %d} LIMIT %d", key, offset, batch_size);
+        this._client.zrevrangebyscore(args, function(err, items) {
+            if (items) {
+                items = items.reverse()
+            }
+            return callback(err, items);
+        });
+        return;
+    }
+
+    debug("getting items from cache [%s] {%d -> %s}", key, startIndex, endIndex);
+    this._client.zrangebyscore(key, startIndex, endIndex, callback);
+    return;
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ss-interface.html">ss-interface</a></li></ul><h3>Classes</h3><ul><li><a href="Client.html">Client</a></li><li><a href="Collection.html">Collection</a></li><li><a href="Server.html">Server</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri May 20 2016 21:17:41 GMT+0000 (UTC)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
