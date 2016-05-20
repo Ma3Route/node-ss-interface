@@ -7,6 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+Added:
+
+* Cache refresh in `Collection` handles purging the cache and filling it with
+  new items, passed from the populate function. This also results in
+  **change in signature** of the populate function.
+
 
 ## 0.3.0 - 19/03/2016
 

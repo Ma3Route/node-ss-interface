@@ -136,11 +136,18 @@ describe("Collection#addSource", function() {
 describe("Collection's internal workings", function() {
     var collection, source;
     var originalItem = { id: 1, data: "internal workings" };
+    var refreshInterval = 150;
 
     beforeEach(function() {
-        collection = new Collection();
+        collection = new Collection({
+            refreshInterval: refreshInterval,
+        });
         source = utils.getSource();
         collection.addSource(source);
+    });
+
+    afterEach(function() {
+        collection.stopRefreshInterval();
     });
 
     it("ignores message if it can not be parsed", function(done) {
@@ -220,15 +227,49 @@ describe("Collection's internal workings", function() {
         source.sendMessage(originalItem);
     });
 
-    it("passes the cache ID, cache itself and a done() callback to populate functions", function(done) {
-        collection.addCache("mine", server, function(id, cache, next) {
+    it("passes the cache ID and a done() callback to populate functions", function(done) {
+        collection.addCache("mine", server, function(id, next) {
             should(id).equal("mine");
-            should(cache).equal(server);
             should(next).be.a.Function();
-            next();
             collection.stopRefreshInterval();
+            next();
             return done();
         });
+        collection.startRefreshInterval();
+    });
+
+    it("purges cache during cache refresh", function(done) {
+        var firstRun = true;
+        collection.addCache("mine", server, function(id, next) {
+            var items = firstRun ? [originalItem] : [];
+            firstRun = false;
+            return next(null, items);
+        });
+        setTimeout(function() {
+            collection.stopRefreshInterval();
+            client.get(function(err, items) {
+                should(err).not.be.ok();
+                should(items.length).equal(0);
+                return done();
+            });
+        }, refreshInterval * 3);
+        collection.startRefreshInterval();
+    });
+
+    it("adds the items returned from the populate functions to cache", function(done) {
+        var items = [{name: "items populated", id: 2332}];
+        collection.addCache("items-populate", server, function(id, next) {
+            return next(null, items);
+        });
+        setTimeout(function() {
+            collection.stopRefreshInterval();
+            client.get(function(getErr, returnedItems) {
+                should(getErr).not.be.ok();
+                returnedItems[0] = JSON.parse(returnedItems[0]);
+                should.deepEqual(returnedItems, items);
+                return done();
+            });
+        }, refreshInterval * 3);
         collection.startRefreshInterval();
     });
 });
@@ -257,7 +298,7 @@ describe("Collection#startRefreshInterval", function() {
 
     it("starts a timed interval", function(done) {
         var interval = 0;
-        collection.addCache(1, server, function(id, cache, next) {
+        collection.addCache(1, server, function(id, next) {
             next();
             if (++interval === 5) return done();
         });
@@ -279,7 +320,7 @@ describe("Collection#stopRefreshInterval", function() {
         var timeout = 800;
         var called = 0;
         this.timeout(timeout + 200);
-        collection.addCache(1, server, function(id, cache, next) {
+        collection.addCache(1, server, function(id, next) {
             called++;
             return next();
         });
