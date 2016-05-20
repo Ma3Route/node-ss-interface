@@ -300,7 +300,7 @@ describe("Collection#startRefreshInterval", function() {
     it("does not invoke populate functions immediately, if options.invokeImmediately = false", function(done) {
         var then = Date.now();
         collection.addCache(1, server, function(id, next) {
-            should(Date.now() - then).above(refreshInterval);
+            should(Date.now() - then).aboveOrEqual(refreshInterval);
             next();
             return done();
         });
