@@ -12,6 +12,9 @@ Added:
 * Cache refresh in `Collection` handles purging the cache and filling it with
   new items, passed from the populate function. This also results in
   **change in signature** of the populate function.
+* Add cache refresh option, `invokeImmediately`, which when set to `true`,
+  invokes the refresh immediately, when `startRefreshInterval` is invoked.
+  Otherwise it doesn't. This option defaults to `true`.
 
 
 ## 0.3.0 - 19/03/2016

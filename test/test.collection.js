@@ -277,10 +277,11 @@ describe("Collection's internal workings", function() {
 
 describe("Collection#startRefreshInterval", function() {
     var collection;
+    var refreshInterval = 150;
 
     beforeEach(function() {
         collection = new Collection({
-            refreshInterval: 150,
+            refreshInterval: refreshInterval,
         });
     });
 
@@ -294,6 +295,18 @@ describe("Collection#startRefreshInterval", function() {
             return done();
         });
         collection.startRefreshInterval();
+    });
+
+    it("does not invoke populate functions immediately, if options.invokeImmediately = false", function(done) {
+        var then = Date.now();
+        collection.addCache(1, server, function(id, next) {
+            should(Date.now() - then).above(refreshInterval);
+            next();
+            return done();
+        });
+        collection.startRefreshInterval({
+            invokeImmediately: false,
+        });
     });
 
     it("starts a timed interval", function(done) {
