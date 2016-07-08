@@ -9,6 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+## 0.5.1 - 8/07/2016
+
+Fixed:
+
+* Fix wrong information in package manifest file (`package.json`)
+
+
 ## 0.5.0 - 8/07/2016
 
 Added:
