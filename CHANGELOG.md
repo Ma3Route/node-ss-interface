@@ -7,6 +7,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+Added:
+
+* Add option `uniqueIds` for `Server#Constructor`, to configure the
+  server interface to guarantee that an item ID is 'allocated' to
+  a single item, that is added (using `Server#addOne`, `Server#add`)
+  most recently with that ID.
+
 
 ## 0.4.0 - 21/05/2016
 
