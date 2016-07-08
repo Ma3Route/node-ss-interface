@@ -7,6 +7,8 @@
 
 
 // npm-installed modules
+var _ = require("lodash");
+var async = require("async");
 var should = require("should");
 var stringify = require("json-stable-stringify");
 
@@ -15,6 +17,7 @@ var stringify = require("json-stable-stringify");
 var Server = require("../lib/server");
 var utils = require("./utils");
 var server, client;
+var serverUniqueIds;
 var config = {
     key: "test:Server",
     max_size: 10,
@@ -24,18 +27,21 @@ var config = {
 
 before(function() {
     server = utils.getCacheServer(config);
+    serverUniqueIds = utils.getCacheServer(_.assign({}, config, {
+        uniqueIds: true,
+    }));
     client = utils.getCacheClient(config);
 });
 
 
-beforeEach(function(done) {
-    server.purge(done);
-});
-
-
-after(function(done) {
-    server.purge(done);
-});
+function purge(done) {
+    return async.parallel([
+        server.purge.bind(server),
+        serverUniqueIds.purge.bind(serverUniqueIds),
+    ], done);
+}
+beforeEach(purge);
+after(purge);
 
 
 describe("Server module", function() {
@@ -173,6 +179,33 @@ describe("Server#addOne", function() {
             });
         });
     });
+
+    it("allows unique IDs", function(done) {
+        var item1 = { id: 1, data: "old" };
+        var item2 = { id: 1, data: "new" };
+        return async.series([
+            function(next) {
+                serverUniqueIds.addOne(item1, function(err) {
+                    should(err).not.be.ok();
+                    return next();
+                });
+            },
+            function(next) {
+                serverUniqueIds.addOne(item2, function(err) {
+                    should(err).not.be.ok();
+                    return next();
+                });
+            },
+            function(next) {
+                client.get(function(err, items) {
+                    should(err).not.be.ok();
+                    should(items.length).equal(1);
+                    should(items[0]).equal(stringify(item2));
+                    return next();
+                });
+            },
+        ], done);
+    });
 });
 
 
@@ -211,6 +244,34 @@ describe("Server#add", function() {
                 return done();
             });
         });
+    });
+
+    it("allows unique IDs", function(done) {
+        var items1 = [{ id: 1, data: "1" }, { id: 2, data: "2" }];
+        var items2 = [{ id: 1, data: "3" }, { id: 2, data: "4" }];
+        return async.series([
+            function(next) {
+                serverUniqueIds.add(items1, function(err) {
+                    should(err).not.be.ok();
+                    return next();
+                });
+            },
+            function(next) {
+                serverUniqueIds.add(items2, function(err) {
+                    should(err).not.be.ok();
+                    return next();
+                });
+            },
+            function(next) {
+                client.get(function(err, items) {
+                    should(err).not.be.ok();
+                    should(items.length).equal(2);
+                    should(items[0]).equal(stringify(items2[0]));
+                    should(items[1]).equal(stringify(items2[1]));
+                    return next();
+                });
+            },
+        ], done);
     });
 });
 

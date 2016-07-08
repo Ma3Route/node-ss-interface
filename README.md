@@ -3,8 +3,12 @@
 
 > Sorted Set Interface (for [Node.js][node])
 
-[![Travis][travis-img]][travis]
+[![Npm][npm-img]][npm] [![Node.js][node-img]][node] [![Travis][travis-img]][travis]
 
+[npm]:https://npmjs.com/package/ss-interface
+[npm-img]: https://img.shields.io/npm/v/ss-interface.svg?style=flat-square
+[node]: https://nodejs.org
+[node-img]:https://img.shields.io/node/v/ss-interface.svg?style=flat-square
 [travis]:https://travis-ci.org/Ma3Route/node-ss-interface
 [travis-img]:https://img.shields.io/travis/Ma3Route/node-ss-interface.svg?style=flat-square
 
