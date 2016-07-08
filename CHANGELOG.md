@@ -14,6 +14,11 @@ Added:
   a single item, that is added (using `Server#addOne`, `Server#add`)
   most recently with that ID.
 
+Changed:
+
+* Drop support for Node.js versions 0.10, 0.11, 0.12
+* Add support for Node.js versions 5, 6
+
 
 ## 0.4.0 - 21/05/2016
 
