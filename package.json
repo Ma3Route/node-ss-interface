@@ -18,19 +18,19 @@
     "async": "^1.5.2",
     "debug": "^2.2.0",
     "json-stable-stringify": "^1.0.1",
-    "lodash": "^4.2.1"
+    "lodash": "^4.13.1"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
-    "grunt-eslint": "^18.1.0",
-    "grunt-jsdoc": "^2.0.0",
+    "grunt-eslint": "^19.0.0",
+    "grunt-jsdoc": "^2.1.0",
     "grunt-mocha-test": "^0.12.7",
-    "istanbul": "^0.4.3",
+    "istanbul": "^0.4.4",
     "jsdoc": "^3.4.0",
     "load-grunt-tasks": "^3.4.0",
-    "mocha": ">=2.4.5",
-    "redis": "^2.4.2",
-    "should": "^8.2.1"
+    "mocha": "^2.5.3",
+    "redis": "^2.6.2",
+    "should": "^9.0.2"
   }
 }
