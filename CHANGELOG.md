@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 
+
+
+## 0.5.0 - 8/07/2016
+
 Added:
 
 * Add option `uniqueIds` for `Server#Constructor`, to configure the
